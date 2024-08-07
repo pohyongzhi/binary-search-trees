@@ -178,9 +178,74 @@ export class Tree {
         // Visit the root
         console.log(callback.data);
     }
+
+    height(node) {
+        if (node === null) {
+            return -1;
+        }
+
+        const leftHeight = this.height(node.left);
+        const rightHeight = this.height(node.right);
+
+        return Math.max(leftHeight, rightHeight) + 1;
+    }
+
+    depth(node) {
+        let result = 0;
+        let currentNode = this.root;
+
+        while (node !== null) {
+            if (currentNode.data === node.data) {
+                return result;
+            }
+
+            if (node.data < currentNode.data) {
+                currentNode = currentNode.left;
+                result++;
+            } else {
+                currentNode = currentNode.right;
+                result++;
+            }
+        }
+
+        return result;
+    }
+
+    isBalanced() {
+        return this.checkBalance(this.root);
+    }
+
+    checkBalance(node) {
+        if (node === null) {
+            return true;
+        }
+
+        // Get the height of left and right
+        const leftHeight = this.height(node.left);
+        const rightHeight = this.height(node.right);
+
+        // Check the difference if the max difference between left and right is 1
+        if (Math.abs(leftHeight - rightHeight) > 1) {
+            return false;
+        }
+
+        return this.checkBalance(node.left) && this.checkBalance(node.right);
+    }
+
+    rebalance() {
+        // Traverse all of the node and store it in an array
+        const arr = [];
+        this.levelOrder((node) => arr.push(node.data));
+
+        // Clean the arr
+        const cleanArr = cleanArray(arr);
+
+        // Call buildTree function and store it to the root
+        this.root = buildTree(cleanArr, 0, cleanArr.length - 1);
+    }
 }
 
-function cleanArray(array) {
+export function cleanArray(array) {
     // Sort the array
     array.sort((a, b) => a - b);
 
@@ -188,7 +253,7 @@ function cleanArray(array) {
     return [...new Set(array)];
 }
 
-function buildTree(arr, start, end) {
+export function buildTree(arr, start, end) {
     if (start > end) return null;
 
     const mid = Math.floor((start + end) / 2);
@@ -200,7 +265,7 @@ function buildTree(arr, start, end) {
     return root;
 }
 
-const prettyPrint = (node, prefix = "", isLeft = true) => {
+export const prettyPrint = (node, prefix = "", isLeft = true) => {
     if (node === null) {
         return;
     }
@@ -212,25 +277,3 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
         prettyPrint(node.left, `${prefix}${isLeft ? "    " : "│   "}`, true);
     }
 };
-
-const arr = [1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14];
-const cleanArr = cleanArray(arr);
-const root = buildTree(cleanArr, 0, cleanArr.length - 1);
-const tree = new Tree(root);
-
-console.log(prettyPrint(tree.root));
-
-// levelOrder test
-// tree.levelOrder((node) => {
-//     console.log(node.data);
-// });
-
-// inOrder test
-// tree.inOrder(tree.root);
-// tree.inOrder();
-
-// preOrder test
-// tree.preOrder(tree.root);
-
-// postOrder test
-tree.postOrder(tree.root);
