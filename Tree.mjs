@@ -110,13 +110,15 @@ export class Tree {
     }
 
     levelOrder(callback) {
-        const result = [];
+        if (typeof callback !== "function") {
+            throw new Error("A callback function is required");
+        }
         const queue = [];
 
         queue.push(this.root);
 
         while (queue.length !== 0) {
-            result.push(queue[0].data);
+            callback(queue[0]);
             if (queue[0].left !== null) {
                 queue.push(queue[0].left);
             }
@@ -125,8 +127,23 @@ export class Tree {
             }
             queue.shift();
         }
+    }
 
-        return result;
+    inOrder(callback) {
+        if (callback === undefined) {
+            throw new Error("A callback is required");
+        } else if (callback === null) {
+            return;
+        }
+
+        // Traverse the left subtree
+        this.inOrder(callback.left);
+
+        // Visit the root
+        console.log(callback.data);
+
+        // Traverse the right subtree
+        this.inOrder(callback.right);
     }
 }
 
@@ -170,4 +187,9 @@ const tree = new Tree(root);
 
 console.log(prettyPrint(tree.root));
 
-console.log(tree.levelOrder());
+// tree.levelOrder((node) => {
+//     console.log(node.data);
+// });
+
+tree.inOrder(tree.root);
+tree.inOrder();
