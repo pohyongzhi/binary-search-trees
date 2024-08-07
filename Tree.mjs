@@ -145,6 +145,39 @@ export class Tree {
         // Traverse the right subtree
         this.inOrder(callback.right);
     }
+
+    preOrder(callback) {
+        if (callback === undefined) {
+            throw new Error("A callback is required");
+        } else if (callback === null) {
+            return;
+        }
+        // Visit the root
+        console.log(callback.data);
+
+        // Traverse the left subtree
+        this.preOrder(callback.left);
+
+        // Traverse the right subtree
+        this.preOrder(callback.right);
+    }
+
+    postOrder(callback) {
+        if (callback === undefined) {
+            throw new Error("A callback is required");
+        } else if (callback === null) {
+            return;
+        }
+
+        // Traverse the left subtree
+        this.postOrder(callback.left);
+
+        // Traverse the right subtree
+        this.postOrder(callback.right);
+
+        // Visit the root
+        console.log(callback.data);
+    }
 }
 
 function cleanArray(array) {
@@ -187,9 +220,17 @@ const tree = new Tree(root);
 
 console.log(prettyPrint(tree.root));
 
+// levelOrder test
 // tree.levelOrder((node) => {
 //     console.log(node.data);
 // });
 
-tree.inOrder(tree.root);
-tree.inOrder();
+// inOrder test
+// tree.inOrder(tree.root);
+// tree.inOrder();
+
+// preOrder test
+// tree.preOrder(tree.root);
+
+// postOrder test
+tree.postOrder(tree.root);
