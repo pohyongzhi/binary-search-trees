@@ -91,6 +91,43 @@ export class Tree {
             }
         }
     }
+
+    find(value) {
+        let currentNode = this.root;
+
+        while (currentNode !== null) {
+            if (currentNode.data === value) {
+                return currentNode;
+            }
+            if (value < currentNode.data) {
+                currentNode = currentNode.left;
+            } else {
+                currentNode = currentNode.right;
+            }
+        }
+
+        return null;
+    }
+
+    levelOrder(callback) {
+        const result = [];
+        const queue = [];
+
+        queue.push(this.root);
+
+        while (queue.length !== 0) {
+            result.push(queue[0].data);
+            if (queue[0].left !== null) {
+                queue.push(queue[0].left);
+            }
+            if (queue[0].right !== null) {
+                queue.push(queue[0].right);
+            }
+            queue.shift();
+        }
+
+        return result;
+    }
 }
 
 function cleanArray(array) {
@@ -130,7 +167,7 @@ const arr = [1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14];
 const cleanArr = cleanArray(arr);
 const root = buildTree(cleanArr, 0, cleanArr.length - 1);
 const tree = new Tree(root);
-console.log(prettyPrint(tree.root));
-tree.delete(8);
 
 console.log(prettyPrint(tree.root));
+
+console.log(tree.levelOrder());
